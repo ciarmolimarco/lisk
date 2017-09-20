@@ -101,6 +101,10 @@ describe('signature', function () {
 		done();
 	});
 
+	afterEach(function (done) {
+		accountsMock.setAccountAndGet.restore();
+	});
+
 	describe('constructor', function () {
 
 		it('should be attach schema and logger to library variable', function () {
@@ -125,7 +129,7 @@ describe('signature', function () {
 			});
 		});
 
-		it('should be okay with correct params', function () {
+		it('should attach accounts object to private modules.accounts variable', function () {
 			signature.bind(accountsMock);
 			var modules = Signature.__get__('modules');
 
@@ -144,7 +148,7 @@ describe('signature', function () {
 
 	describe('verify', function () {
 
-		it('should return error if signature is undefined', function (done) {
+		it('should call callback with error if signature is undefined', function (done) {
 			delete trs.asset.signature;
 
 			signature.verify(trs, sender, function (err) {
@@ -153,7 +157,7 @@ describe('signature', function () {
 			});
 		});
 
-		it('should return error if amount is not equal to 0', function (done) {
+		it('should call callback with error if amount is not equal to 0', function (done) {
 			trs.amount = 1;
 
 			signature.verify(trs, sender, function (err) {
@@ -162,7 +166,7 @@ describe('signature', function () {
 			});
 		});
 
-		it('should return error if publicKey is undefined', function (done) {
+		it('should call callback with if publicKey is undefined', function (done) {
 			delete trs.asset.signature.publicKey;
 
 			signature.verify(trs, sender, function (err) {
@@ -171,7 +175,7 @@ describe('signature', function () {
 			});
 		});
 
-		it('should return error if publicKey is invalid', function (done) {
+		it('should call callback with if publicKey is invalid', function (done) {
 			trs.asset.signature.publicKey = 'invalid-public-key';
 
 			signature.verify(trs, sender, function (err) {
@@ -180,14 +184,14 @@ describe('signature', function () {
 			});
 		});
 
-		it('should verify okay for valid transaction', function (done) {
+		it('should call callback with error = null for valid transaction', function (done) {
 			signature.verify(trs, sender, done);
 		});
 	});
 
 	describe('process', function () {
 
-		it('should call the callback', function (done) {
+		it('should call callback', function (done) {
 			signature.process(trs, sender, done);
 		});
 	});
@@ -322,7 +326,7 @@ describe('signature', function () {
 			expect(signature.dbRead(rawTrs)).to.eql(null);
 		});
 
-		it('should be okay for valid input', function () {
+		it('should return signature asset for raw signature transaction', function () {
 			expect(signature.dbRead(rawTrs)).to.eql({
 				signature: {
 					publicKey: 'ebfb1157f9f9ad223b1c7468b0d643663ec5a34ac7a6d557243834ae604d72b7',
@@ -342,7 +346,7 @@ describe('signature', function () {
 			}).to.throw();
 		});
 
-		it('should be okay for valid input', function () {
+		it('should return signature db promise for signature transaction', function () {
 			expect(signature.dbSave(trs)).to.eql({
 				table: 'signatures',
 				fields: [
