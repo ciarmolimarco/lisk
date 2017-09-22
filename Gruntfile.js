@@ -82,8 +82,13 @@ module.exports = function (grunt) {
 				maxBuffer: maxBufferSize
 			},
 
-			testFunctionalHttp: {
-				command: './node_modules/.bin/_mocha test/functional/http/index.js',
+			testFunctionalHttpPost: {
+				command: './node_modules/.bin/_mocha test/functional/http/post/index.js',
+				maxBuffer: maxBufferSize
+			},
+
+			testFunctionalHttpGet: {
+				command: './node_modules/.bin/_mocha test/functional/http/get/index.js',
 				maxBuffer: maxBufferSize
 			},
 
@@ -153,7 +158,8 @@ module.exports = function (grunt) {
 	grunt.registerTask('test', ['eslint', 'exec:coverage']);
 	grunt.registerTask('test-unit', ['eslint', 'exec:coverageUnit']);
 	grunt.registerTask('test-functional-ws', ['eslint', 'exec:testFunctionalWs']);
-	grunt.registerTask('test-functional-http', ['eslint', 'exec:testFunctionalHttp']);
+	grunt.registerTask('test-functional-http-post', ['eslint', 'exec:testFunctionalHttpPost']);
+	grunt.registerTask('test-functional-http-get', ['eslint', 'exec:testFunctionalHttpGet']);
 	grunt.registerTask('test-integration', ['eslint', 'exec:testIntegration']);
 
 	grunt.registerTask('eslint-fix', 'Run eslint and fix formatting', function () {
